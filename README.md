@@ -1,5 +1,5 @@
 <p align="center">
-  <img alt='tailor-wind' src='.github/assets/logo.png' width='350'/>
+  <img alt='tailor-wind' src='https://github.com/ntwigs/tailorwind/blob/HEAD/.github/assets/logo.png' width='350'/>
   <p align="center">More verbose component declarations with Tailwind 🧶💙</p>
   <p align="center">
     <img alt='dependency-count-badge' src='https://img.shields.io/badge/dependencies-0-blue?style=flat-square' />
