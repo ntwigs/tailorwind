@@ -11,7 +11,7 @@
 <hr>
 
 # What's this? 🧶
-Tailorwind is a super tiny little library that allows you to easily declare components with the utility classnames from tailwind. Basically - you'll be able to pull stuff like this:
+Tailorwind is a super tiny little library that allows you to easily declare components with the utility class names from [Tailwind](https://tailwindcss.com/). Basically - you'll be able to pull stunts like these:
 
 ```
 // Super basic
@@ -47,10 +47,13 @@ or even **pnpm** 🍻
 pnpm install tailorwind
 ```
 
-All lined up and ready to go! 🥊
+All lined up and ready to go! 🥊 Just **slap an import** like this right onto your code and you're golden 👑
+```
+import { tw } from 'tailorwind'
+```
 
 ## Why this? 🤔
-I love tailwind. It's simply great. But - I was starting to get a little bit tiered of the whole "div-bonanza" consisting of `<div className="p-8 bg-red-500 ... bla bla" />` and so on. I know what you're thinking - just declare a component that accepts children and use that bad boi if you'd like more verbose components. Fine, that's one way to go about it. But think of all the **lines** we're saving 💙.
+I love [Tailwind](https://tailwindcss.com/). It's simply great. But - I was starting to get a little bit tired of the whole "div-bonanza" consisting of `<div className="p-8 bg-red-500 ... bla bla" />` and so on. I know what you're thinking - just declare a component that accepts children and use that bad boi if you'd like more verbose components. Fine, that's one way to go about it. But think of all the **lines** we're saving 💙.
 
 We're taking this chunky chunk-chunk:
 ```
@@ -69,7 +72,7 @@ const ChiliButton = tw.button`bg-[red]`
 
 It might be a 🌶️**HOT TAKE**🌶️ but I'd say it's *at least* a little bit of a win.
 
-## With the power of tailorwind ⚡
+## With the power of Tailorwind ⚡
 You get the gist. You write smaller amounts of code and it makes it a bit easier to read. Here's my final example to trick you into using my simple little library.
 
 ```
@@ -107,10 +110,10 @@ const Button = {
 }
 ```
 
-Fully animated and ready to rumble - with the power of the all might framer-motion. Just slap one of those motion components right in there and watch that component purr. 🧶
+Fully animated and ready to rumble - with the power of the all mighty framer-motion. Just slap one of those motion components right in there and watch that component purr. 🧶
 
 ## Hey oh! Missing feature alert 🚨
-You might end up in a corner where you need a bit more functionallity. This teeny tiny lib is just supposed to do the absolute necessity to get the component declaration show on the road. If you're looking for a more [styled-components](https://styled-components.com/) type of wibe - I'd direct you right on over to: [tailwind-styled-components](https://github.com/MathiasGilson/tailwind-styled-component). That's also a teeny tiny library that's just a tad bit larger - but also does a tad bit more. 🍻 So check that out before wrecking havoc over here with your silly little feature requests. 💙
+You might end up in a corner where you need a bit more functionality. This teeny tiny lib is just supposed to do the absolute necessity to get the component declaration show on the road. If you're looking for a more [styled-components](https://styled-components.com/) type of wibe - I'd direct you right on over to: [tailwind-styled-components](https://github.com/MathiasGilson/tailwind-styled-component). That's also a teeny tiny library that's just a tad bit larger - but also does a tad bit more. 🍻 So check that out before wreaking havoc over here with your silly little feature requests. 💙
 
 </br></br>
 
