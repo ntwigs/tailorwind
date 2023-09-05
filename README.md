@@ -1,15 +1,14 @@
 <p align="center">
-  <img alt='tailor-wind' src='.github/assets/logo.png' width='250'/>
-  <p align="center">Make those divs tell a story.</p>
+  <img alt='tailor-wind' src='.github/assets/logo.png' width='350'/>
+  <p align="center">More verbose component declarations with Tailwind 🧶💙</p>
   <p align="center">
     <img alt='dependency-count-badge' src='https://img.shields.io/badge/dependencies-0-blue?style=flat-square' />
     <img alt='min-count' src='https://img.shields.io/bundlephobia/min/tailorwind?style=flat-square' />
     <img alt='downloads' src='https://img.shields.io/npm/dw/tailorwind?style=flat-square' />
   </p>
 </div>
-<hr>
 
-</br></br>
+<hr>
 
 # What's this? 🧶
 Tailorwind is a super tiny little library that allows you to easily declare components with the utility classnames from tailwind. Basically - you'll be able to pull stuff like this:
