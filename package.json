@@ -2,14 +2,14 @@
   "name": "tailorwind",
   "author": "Oscar Nordquist <ntwigs>",
   "homepage": "https://github.com/ntwigs/tailorwind",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "source": "src/index.ts",
   "module": "dist/main.js",
   "types": "dist/types.d.ts",
   "type": "module",
   "prettier": "@goatee/prettier",
-  "description": "Create components from tailwindcss template tags - make those divs tell a story.",
+  "description": "More verbose component declarations with Tailwind 🧶💙",
   "keywords": [
     "react",
     "css",
@@ -18,7 +18,8 @@
     "tailwind",
     "tailwindcss-plugin",
     "tailwind-css",
-    "tailwindcss-ui"
+    "tailwindcss-ui",
+    "tailwind-styled-components"
   ],
   "files": [
     "dist/main.js",

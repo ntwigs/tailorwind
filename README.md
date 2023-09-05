@@ -57,6 +57,22 @@ All lined up and ready to go! 🥊 Just **slap an import** like this right onto 
 import { tw } from 'tailorwind'
 ```
 
+## What about the intellisense? 😱
+
+Wouldn't this break the amazing [Tailwind intellisense extension](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss)? Fret not! There's a solution for this 🙏
+
+First off - you'll need [the extension](https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss).
+Then you'll have to [edit your vscode settings](https://code.visualstudio.com/docs/getstarted/settings) and add the following property:
+
+```
+"tailwindCSS.experimental.classRegex": [
+    "tw\\.[^`]+`([^`]*)`", // tw.xxx`...`
+    "tw\\(.*?\\).*?`([^`]*)" // tw(Component)`...`
+]
+```
+
+I've stolen those regexes directly from [tailwind-styled-components](https://github.com/MathiasGilson/Tailwind-Styled-Component/tree/master). In other words - don't thank me for em. Skip on over to that repo and give your thanks. 🙏
+
 ## Why this? 🤔
 
 I love [Tailwind](https://tailwindcss.com/). It's simply great. But - I was starting to get a little bit tired of the whole "div-bonanza" consisting of `<div className="p-8 bg-red-500 ... bla bla" />` and so on. I know what you're thinking - just declare a component that accepts children and use that bad boi if you'd like more verbose components. Fine, that's one way to go about it. But think of all the **lines** we're saving 💙.
