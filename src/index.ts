@@ -69,7 +69,7 @@ const handler = {
  * the EMPTY_PROXY_TARGET.
  */
 const EMPTY_PROXY_TARGET = (() => {}) as unknown as TailorwindFunction
-export const tc: TailorwindFunction = new Proxy<TailorwindFunction>(
+export const tw: TailorwindFunction = new Proxy<TailorwindFunction>(
   EMPTY_PROXY_TARGET,
   handler
 )
