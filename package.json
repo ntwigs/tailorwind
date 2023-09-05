@@ -26,7 +26,8 @@
   ],
   "scripts": {
     "build": "parcel build --no-source-maps",
-    "lint": "tsc --noEmit && prettier . --write & eslint ./src"
+    "lint": "tsc --noEmit && prettier . --write & eslint ./src",
+    "eslint": "eslint"
   },
   "devDependencies": {
     "@goatee/prettier": "^0.0.4",
@@ -39,7 +40,8 @@
     "eslint-plugin-react": "^7.33.2",
     "parcel": "^2.9.3",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "typescript": "^5.2.2",
+    "react": ">= 16.8.0"
   },
   "peerDependencies": {
     "react": ">= 16.8.0"
