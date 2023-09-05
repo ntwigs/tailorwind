@@ -28,6 +28,27 @@ const StyledComponent = styled.button`display: flex; justify-content: center;`
 const ChiliButton = tw(StyledComponent)`bg-[red]`
 ```
 
+## Installing this slice of life 🍻
+I knew I'd sell you on this piece of super tiny software the moment you stepped into this repo! You can either check it out at [npmjs](https://www.npmjs.com/package/tailorwind) - or just install it using your favorite package manager.
+
+Using yarn 🧶
+
+```
+yarn add tailorwind
+```
+
+or npm 📦
+```
+npm install tailorwind
+```
+
+or even pnpm 🍻
+```
+pnpm install tailorwind
+```
+
+All lined up and ready to go! 🥊
+
 ## Why this? 🤔
 I love tailwind. It's simply great. But - I was starting to get a little bit tiered of the whole "div-bonanza" consisting of `<div className="p-8 bg-red-500 ... bla bla" />` and so on. I know what you're thinking - just declare a component that accepts children and use that bad boi if you'd like more verbose components. Fine, that's one way to go about it. But think of all the **lines** we're saving 💙.
 
@@ -90,7 +111,6 @@ Fully animated and ready to rumble - with the power of the all might framer-moti
 
 ## Hey oh! Missing feature alert 🚨
 You might end up in a corner where you need a bit more functionallity. This teeny tiny lib is just supposed to do the absolute necessity to get the component declaration show on the road. If you're looking for a more [styled-components](https://styled-components.com/) type of wibe - I'd direct you right on over to: [tailwind-styled-components](https://github.com/MathiasGilson/tailwind-styled-component). That's also a teeny tiny library that's just a tad bit larger - but also does a tad bit more. 🍻 So check that out before wrecking havoc over here with your silly little feature requests. 💙
-
 
 </br></br>
 
