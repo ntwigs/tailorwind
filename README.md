@@ -28,21 +28,21 @@ const StyledComponent = styled.button`display: flex; justify-content: center;`
 const ChiliButton = tw(StyledComponent)`bg-[red]`
 ```
 
-## Installing this slice of life 🍻
+## Getting the show on the road 🍻
 I knew I'd sell you on this piece of super tiny software the moment you stepped into this repo! You can either check it out at [npmjs](https://www.npmjs.com/package/tailorwind) - or just install it using your favorite package manager.
 
-Using yarn 🧶
+Using **yarn** 🧶
 
 ```
 yarn add tailorwind
 ```
 
-or npm 📦
+or **npm** 📦
 ```
 npm install tailorwind
 ```
 
-or even pnpm 🍻
+or even **pnpm** 🍻
 ```
 pnpm install tailorwind
 ```
