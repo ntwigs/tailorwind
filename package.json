@@ -2,11 +2,12 @@
   "name": "tailorwind",
   "author": "Oscar Nordquist <ntwigs>",
   "homepage": "https://github.com/ntwigs/tailorwind",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "source": "src/index.ts",
-  "main": "dist/main.js",
+  "module": "dist/main.js",
   "types": "dist/types.d.ts",
+  "type": "module",
   "prettier": "@goatee/prettier",
   "description": "Create components from tailwindcss template tags - make those divs tell a story.",
   "keywords": [
@@ -24,7 +25,7 @@
     "dist/types.d.ts"
   ],
   "scripts": {
-    "build": "parcel build",
+    "build": "parcel build --no-source-maps",
     "lint": "tsc --noEmit && prettier . --write & eslint ./src"
   },
   "devDependencies": {
@@ -43,5 +44,10 @@
   "peerDependencies": {
     "react": "^18.2.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "targets": {
+    "module": {
+      "optimize": true
+    }
+  }
 }
