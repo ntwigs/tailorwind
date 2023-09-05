@@ -1,8 +1,11 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": ["dom", "DOM.Iterable", "esnext"],
+    "target": "ES2015",
+    "module": "CommonJS",
+    "strict": true,
+    "esModuleInterop": true,
     "noUnusedLocals": true,
+    "forceConsistentCasingInFileNames": true,
     "noUnusedParameters": true,
     "skipLibCheck": true
   },
