@@ -31,7 +31,7 @@ const ChiliButton = tw(StyledComponent)`bg-[red]`
 
 ## Getting the show on the road 🍻
 
-I knew I'd sell you on this piece of super tiny software the moment you stepped into this repo! You can either check it out at [npmjs](https://www.npmjs.com/package/tailorwind) - or just install it using your favorite package manager.
+I knew you'd buy right into this piece of super tiny software the moment you stepped into this repo! You can either check it out at [npmjs](https://www.npmjs.com/package/tailorwind) - or just install it using your favorite package manager.
 
 Using **yarn** 🧶
 
