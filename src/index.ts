@@ -82,18 +82,31 @@ type TailorwindFunctionAccessor = <Component extends TagNames | ElementType>(
   ? TailorwindComponentGenerator<Component> & TailorwindExtended<Component>
   : Component & TailorwindExtended<Component>
 
+type TailorwindTemplateLiteralAccessor = (
+  literals: TemplateStringsArray
+) => string
+
 type TailorwindFunction = TailorwindPropertyAccessor &
-  TailorwindFunctionAccessor
+  TailorwindFunctionAccessor &
+  TailorwindTemplateLiteralAccessor
+
+const isTailorwindStyleHelper = (arg: unknown): arg is TemplateStringsArray =>
+  Array.isArray(arg)
 
 const handler = {
   get:
     (_t: unknown, tag: TagNames) =>
     ([className]: TemplateStringsArray) =>
       createBaseComponent({ tag, className }),
-  apply:
-    (_t: unknown, _arg: unknown, [tag]: TagNames[]) =>
-    ([className]: TemplateStringsArray) =>
-      createBaseComponent({ tag, className }),
+  apply: (_t: unknown, _arg: unknown, [tag]: TagNames[]) => {
+    if (isTailorwindStyleHelper(tag)) {
+      const [className] = tag
+      return className
+    }
+
+    return ([className]: TemplateStringsArray) =>
+      createBaseComponent({ tag, className })
+  },
 }
 
 /**
@@ -101,7 +114,7 @@ const handler = {
  * the EMPTY_PROXY_TARGET.
  */
 const EMPTY_PROXY_TARGET = (() => {}) as unknown as TailorwindFunction
-export const tw: TailorwindFunction = new Proxy<TailorwindFunction>(
+export const testtw: TailorwindFunction = new Proxy<TailorwindFunction>(
   EMPTY_PROXY_TARGET,
   handler
 )
