@@ -16,6 +16,9 @@ Tailorwind is a super tiny little library that allows you to easily declare comp
 
 ```
 // Super basic
+const ChiliButtonStyle = tw`bg-[red]`
+
+// Kinda basic
 const ChiliButton = tw.button`bg-[red]`
 
 // Spicy basic
@@ -27,6 +30,9 @@ const AnimatedChiliButton = tw(motion.button)`bg-[red]`
 // You should really chillax.
 const StyledComponent = styled.button`display: flex; justify-content: center;`
 const ChiliButton = tw(StyledComponent)`bg-[red]`
+
+// NOOOOOOOOOOO! 😭
+const ChiliButton = tw(styled(motion.button)`display: flex;`)`justify-center bg-[red]`
 ```
 
 ## Getting the show on the road 🍻
@@ -121,13 +127,13 @@ const variants: Variants = {
   },
 }
 
-BaseButton.defaultProps = {
+BaseButton.setDefaultProps({
   initial: 'initial',
   animate: 'animate',
   whileTap: 'tap',
   whileHover: 'hover',
   variants,
-}
+})
 
 const Button = {
   Primary: tw(BaseButton)`bg-[red]`,
