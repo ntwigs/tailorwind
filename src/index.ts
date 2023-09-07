@@ -3,6 +3,7 @@ import {
   type ElementType,
   type HTMLProps,
   type JSX,
+  type ComponentProps,
 } from 'react'
 
 type TagNames = keyof HTMLElementTagNameMap
@@ -10,6 +11,10 @@ type TagNames = keyof HTMLElementTagNameMap
 type CreateBaseComponent = {
   className: string
   tag: TagNames
+}
+
+const getMergedClassnames = (...classNames: string[]) => {
+  return classNames.join(' ').trim()
 }
 
 /**
@@ -21,15 +26,42 @@ const createBaseComponent = ({
   tag,
   className: classNameFromDeclaration = DEFAULT_CLASSNAME,
 }: CreateBaseComponent) => {
-  return ({
+  let defaultProps = {}
+
+  const componentFactory = ({
     children,
     className: classNameFromExecution = DEFAULT_CLASSNAME,
     ...rest
   }: HTMLProps<TagNames>) => {
-    const classMerge =
-      `${classNameFromExecution} ${classNameFromDeclaration}`.trim()
-    return createElement(tag, { ...rest, className: classMerge }, children)
+    const className = getMergedClassnames(
+      classNameFromExecution,
+      classNameFromDeclaration
+    )
+    const props = { ...defaultProps, ...rest, className }
+    return createElement(tag, props, children)
   }
+
+  componentFactory['setDefaultProps'] = (
+    _defaultProps: HTMLProps<TagNames>
+  ) => {
+    defaultProps = _defaultProps
+  }
+
+  return componentFactory
+}
+
+/**
+ * Adding support for default props since default props will be deprecated
+ * in a future major update of React. [https://github.com/facebook/react/pull/25699]
+ */
+type TailorwindExtended<Component extends TagNames | ElementType> = {
+  /**
+   * Used to set attributes for HTML element or setting default values
+   * for a component to avoid clutter and redundant component declarations.
+   *
+   * ex. Button.setDefaultProps({ type: 'submit' })
+   */
+  setDefaultProps: (defaultProps: ComponentProps<Component>) => void
 }
 
 type TailorwindComponentGenerator<Component extends TagNames> = (
@@ -39,7 +71,7 @@ type TailorwindComponentGenerator<Component extends TagNames> = (
 type TailorwindPropertyAccessor = {
   [Component in TagNames]: (
     literals: TemplateStringsArray
-  ) => TailorwindComponentGenerator<Component>
+  ) => TailorwindComponentGenerator<Component> & TailorwindExtended<Component>
 }
 
 type TailorwindFunctionAccessor = <Component extends TagNames | ElementType>(
@@ -47,8 +79,8 @@ type TailorwindFunctionAccessor = <Component extends TagNames | ElementType>(
 ) => (
   literals: TemplateStringsArray
 ) => Component extends TagNames
-  ? TailorwindComponentGenerator<Component>
-  : Component
+  ? TailorwindComponentGenerator<Component> & TailorwindExtended<Component>
+  : Component & TailorwindExtended<Component>
 
 type TailorwindFunction = TailorwindPropertyAccessor &
   TailorwindFunctionAccessor
