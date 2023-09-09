@@ -9,12 +9,28 @@ import {
 type TagNames = keyof HTMLElementTagNameMap
 
 type CreateBaseComponent = {
-  className: string
+  classNames: TemplateStringsArray
+  fns: (() => string)[]
   tag: TagNames
 }
 
 const getMergedClassnames = (...classNames: string[]) => {
   return classNames.join(' ').trim()
+}
+
+const getEvaluatedTemplateLiteral = <T>(
+  styles: TemplateStringsArray,
+  fns: ((args: T) => string)[],
+  props: T
+) => {
+  return styles
+    .map((style, i) => {
+      const fn = fns[i]
+      return fn ? `${style}${fn(props)}` : style
+    })
+    .join('')
+    .replace(/\n/g, '')
+    .trim()
 }
 
 /**
@@ -24,7 +40,8 @@ const getMergedClassnames = (...classNames: string[]) => {
 const DEFAULT_CLASSNAME = ''
 const createBaseComponent = ({
   tag,
-  className: classNameFromDeclaration = DEFAULT_CLASSNAME,
+  classNames: classNamesFromDeclaration,
+  fns,
 }: CreateBaseComponent) => {
   let defaultProps = {}
 
@@ -33,14 +50,23 @@ const createBaseComponent = ({
     className: classNameFromExecution = DEFAULT_CLASSNAME,
     ...rest
   }: HTMLProps<TagNames>) => {
-    const className = getMergedClassnames(
-      classNameFromExecution,
-      classNameFromDeclaration
+    const combinedProps = { ...defaultProps, ...rest }
+
+    const evaluatedClassNamesFromDecleration = getEvaluatedTemplateLiteral(
+      classNamesFromDeclaration,
+      fns,
+      combinedProps
     )
-    const props = { ...defaultProps, ...rest, className }
-    return createElement(tag, props, children)
+
+    const className = getMergedClassnames(
+      evaluatedClassNamesFromDecleration,
+      classNameFromExecution
+    )
+
+    return createElement(tag, { ...combinedProps, className }, children)
   }
 
+  // TODO: Need better types in here - this is a sad string dep
   componentFactory['setDefaultProps'] = (
     _defaultProps: HTMLProps<TagNames>
   ) => {
@@ -54,33 +80,41 @@ const createBaseComponent = ({
  * Adding support for default props since default props will be deprecated
  * in a future major update of React. [https://github.com/facebook/react/pull/25699]
  */
-type TailorwindExtended<Component extends TagNames | ElementType> = {
+type TailorwindExtended<
+  Component extends TagNames | ElementType,
+  TransientProps,
+> = {
   /**
    * Used to set attributes for HTML element or setting default values
    * for a component to avoid clutter and redundant component declarations.
    *
    * ex. Button.setDefaultProps({ type: 'submit' })
    */
-  setDefaultProps: (defaultProps: ComponentProps<Component>) => void
+  setDefaultProps: (
+    defaultProps: ComponentProps<Component> & TransientProps
+  ) => void
 }
 
-type TailorwindComponentGenerator<Component extends TagNames> = (
-  args: JSX.IntrinsicElements[Component]
-) => JSX.Element
+type TailorwindComponentGenerator<
+  Component extends TagNames | ElementType,
+  TransientProps,
+> = (args: ComponentProps<Component> & TransientProps) => JSX.Element
 
 type TailorwindPropertyAccessor = {
-  [Component in TagNames]: (
-    literals: TemplateStringsArray
-  ) => TailorwindComponentGenerator<Component> & TailorwindExtended<Component>
+  [Component in TagNames]: <TransientProps>(
+    literals: TemplateStringsArray,
+    ...fns: ((args: TransientProps & ComponentProps<Component>) => string)[]
+  ) => TailorwindComponentGenerator<Component, TransientProps> &
+    TailorwindExtended<Component, TransientProps>
 }
 
 type TailorwindFunctionAccessor = <Component extends TagNames | ElementType>(
   tag: Component
-) => (
-  literals: TemplateStringsArray
-) => Component extends TagNames
-  ? TailorwindComponentGenerator<Component> & TailorwindExtended<Component>
-  : Component & TailorwindExtended<Component>
+) => <TransientProps>(
+  literals: TemplateStringsArray,
+  ...fns: ((args: TransientProps & ComponentProps<Component>) => string)[]
+) => TailorwindComponentGenerator<Component, TransientProps> &
+  TailorwindExtended<Component, TransientProps>
 
 type TailorwindTemplateLiteralAccessor = (
   literals: TemplateStringsArray
@@ -96,16 +130,17 @@ const isTailorwindStyleHelper = (arg: unknown): arg is TemplateStringsArray =>
 const handler = {
   get:
     (_t: unknown, tag: TagNames) =>
-    ([className]: TemplateStringsArray) =>
-      createBaseComponent({ tag, className }),
+    (classNames: TemplateStringsArray, ...fns: (() => string)[]) =>
+      createBaseComponent({ tag, classNames, fns }),
+
   apply: (_t: unknown, _arg: unknown, [tag]: TagNames[]) => {
     if (isTailorwindStyleHelper(tag)) {
       const [className] = tag
       return className
     }
 
-    return ([className]: TemplateStringsArray) =>
-      createBaseComponent({ tag, className })
+    return (classNames: TemplateStringsArray, ...fns: (() => string)[]) =>
+      createBaseComponent({ tag, classNames, fns })
   },
 }
 
