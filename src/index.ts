@@ -8,9 +8,15 @@ import {
 
 type TagNames = keyof HTMLElementTagNameMap
 
+type TemplateLiteralTag =
+  | (<Component extends TagNames | ElementType, TransientProps>(
+      args: TransientProps & ComponentProps<Component>
+    ) => string)
+  | string
+
 type CreateBaseComponent = {
   classNames: TemplateStringsArray
-  fns: (() => string)[]
+  tags: TemplateLiteralTag[]
   tag: TagNames
 }
 
@@ -20,60 +26,19 @@ const getMergedClassnames = (...classNames: string[]) => {
 
 const getEvaluatedTemplateLiteral = <T>(
   styles: TemplateStringsArray,
-  fns: ((args: T) => string)[],
+  tags: TemplateLiteralTag[],
   props: T
 ) => {
   return styles
     .map((style, i) => {
-      const fn = fns[i]
-      return fn ? `${style}${fn(props)}` : style
+      const tag = tags[i]
+      return tag
+        ? `${style}${typeof tag === 'function' ? tag(props) : tag}`
+        : style
     })
     .join('')
     .replace(/\n/g, '')
     .trim()
-}
-
-/**
- * Setting default classname in order to avoid undefined values when
- * merging the classnames from declaration and execution.
- */
-const DEFAULT_CLASSNAME = ''
-const createBaseComponent = ({
-  tag,
-  classNames: classNamesFromDeclaration,
-  fns,
-}: CreateBaseComponent) => {
-  let defaultProps = {}
-
-  const componentFactory = ({
-    children,
-    className: classNameFromExecution = DEFAULT_CLASSNAME,
-    ...rest
-  }: HTMLProps<TagNames>) => {
-    const combinedProps = { ...defaultProps, ...rest }
-
-    const evaluatedClassNamesFromDecleration = getEvaluatedTemplateLiteral(
-      classNamesFromDeclaration,
-      fns,
-      combinedProps
-    )
-
-    const className = getMergedClassnames(
-      evaluatedClassNamesFromDecleration,
-      classNameFromExecution
-    )
-
-    return createElement(tag, { ...combinedProps, className }, children)
-  }
-
-  // TODO: Need better types in here - this is a sad string dep
-  componentFactory['setDefaultProps'] = (
-    _defaultProps: HTMLProps<TagNames>
-  ) => {
-    defaultProps = _defaultProps
-  }
-
-  return componentFactory
 }
 
 /**
@@ -95,26 +60,73 @@ type TailorwindExtended<
   ) => void
 }
 
+/**
+ * Setting default classname in order to avoid undefined values when
+ * merging the classnames from declaration and execution.
+ */
+const DEFAULT_CLASSNAME = ''
+const createBaseComponent = ({
+  tag,
+  classNames: classNamesFromDeclaration,
+  tags,
+}: CreateBaseComponent) => {
+  let defaultProps = {}
+
+  const componentFactory = ({
+    children,
+    className: classNameFromExecution = DEFAULT_CLASSNAME,
+    ...rest
+  }: HTMLProps<TagNames>) => {
+    const combinedProps = { ...defaultProps, ...rest }
+
+    const evaluatedClassNamesFromDecleration = getEvaluatedTemplateLiteral(
+      classNamesFromDeclaration,
+      tags,
+      combinedProps
+    )
+
+    const className = getMergedClassnames(
+      evaluatedClassNamesFromDecleration,
+      classNameFromExecution
+    )
+
+    return createElement(tag, { ...combinedProps, className }, children)
+  }
+
+  const extendedComponentFactory = componentFactory as TailorwindExtended<
+    typeof tag,
+    HTMLProps<typeof tag>
+  > &
+    typeof componentFactory
+
+  extendedComponentFactory['setDefaultProps'] = (extendedProps) => {
+    defaultProps = extendedProps
+  }
+
+  return extendedComponentFactory
+}
+
 type TailorwindComponentGenerator<
   Component extends TagNames | ElementType,
   TransientProps,
 > = (args: ComponentProps<Component> & TransientProps) => JSX.Element
 
+type TailorwindComponent<Component extends TagNames | ElementType, TransientProps> = TailorwindComponentGenerator<Component, TransientProps> & TailorwindExtended<Component, TransientProps>
+
+type TailorwindGeneratorFn<Component extends TagNames | ElementType> = <
+  TransientProps,
+>(
+  literals: TemplateStringsArray,
+  ...fns: TemplateLiteralTag[]
+) => TailorwindComponent<Component, TransientProps>
+
 type TailorwindPropertyAccessor = {
-  [Component in TagNames]: <TransientProps>(
-    literals: TemplateStringsArray,
-    ...fns: ((args: TransientProps & ComponentProps<Component>) => string)[]
-  ) => TailorwindComponentGenerator<Component, TransientProps> &
-    TailorwindExtended<Component, TransientProps>
+  [Component in TagNames]: TailorwindGeneratorFn<Component>
 }
 
 type TailorwindFunctionAccessor = <Component extends TagNames | ElementType>(
   tag: Component
-) => <TransientProps>(
-  literals: TemplateStringsArray,
-  ...fns: ((args: TransientProps & ComponentProps<Component>) => string)[]
-) => TailorwindComponentGenerator<Component, TransientProps> &
-  TailorwindExtended<Component, TransientProps>
+) => TailorwindGeneratorFn<Component>
 
 type TailorwindTemplateLiteralAccessor = (
   literals: TemplateStringsArray
@@ -130,8 +142,8 @@ const isTailorwindStyleHelper = (arg: unknown): arg is TemplateStringsArray =>
 const handler = {
   get:
     (_t: unknown, tag: TagNames) =>
-    (classNames: TemplateStringsArray, ...fns: (() => string)[]) =>
-      createBaseComponent({ tag, classNames, fns }),
+    (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag[]) =>
+      createBaseComponent({ tag, classNames, tags }),
 
   apply: (_t: unknown, _arg: unknown, [tag]: TagNames[]) => {
     if (isTailorwindStyleHelper(tag)) {
@@ -139,8 +151,8 @@ const handler = {
       return className
     }
 
-    return (classNames: TemplateStringsArray, ...fns: (() => string)[]) =>
-      createBaseComponent({ tag, classNames, fns })
+    return (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag[]) =>
+      createBaseComponent({ tag, classNames, tags })
   },
 }
 
