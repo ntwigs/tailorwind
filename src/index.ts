@@ -8,15 +8,15 @@ import {
 
 type TagNames = keyof HTMLElementTagNameMap
 
-type TemplateLiteralTag =
-  | (<Component extends TagNames | ElementType, TransientProps>(
+type TemplateLiteralTag<Component extends TagNames | ElementType> =
+  | (<TransientProps>(
       args: TransientProps & ComponentProps<Component>
     ) => string)
   | string
 
 type CreateBaseComponent = {
   classNames: TemplateStringsArray
-  tags: TemplateLiteralTag[]
+  tags: TemplateLiteralTag<TagNames>[]
   tag: TagNames
 }
 
@@ -24,10 +24,10 @@ const getMergedClassnames = (...classNames: string[]) => {
   return classNames.join(' ').trim()
 }
 
-const getEvaluatedTemplateLiteral = <T>(
+const getEvaluatedTemplateLiteral = <T extends TagNames | ElementType>(
   styles: TemplateStringsArray,
-  tags: TemplateLiteralTag[],
-  props: T
+  tags: TemplateLiteralTag<T>[],
+  props: ComponentProps<T>
 ) => {
   return styles
     .map((style, i) => {
@@ -76,7 +76,7 @@ const createBaseComponent = ({
     children,
     className: classNameFromExecution = DEFAULT_CLASSNAME,
     ...rest
-  }: HTMLProps<TagNames>) => {
+  }: ComponentProps<typeof tag>) => {
     const combinedProps = { ...defaultProps, ...rest }
 
     const evaluatedClassNamesFromDecleration = getEvaluatedTemplateLiteral(
@@ -117,7 +117,7 @@ type TailorwindGeneratorFn<Component extends TagNames | ElementType> = <
   TransientProps,
 >(
   literals: TemplateStringsArray,
-  ...fns: TemplateLiteralTag[]
+  ...fns: TemplateLiteralTag<Component>[]
 ) => TailorwindComponent<Component, TransientProps>
 
 type TailorwindPropertyAccessor = {
@@ -142,7 +142,7 @@ const isTailorwindStyleHelper = (arg: unknown): arg is TemplateStringsArray =>
 const handler = {
   get:
     (_t: unknown, tag: TagNames) =>
-    (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag[]) =>
+    (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag<typeof tag>[]) =>
       createBaseComponent({ tag, classNames, tags }),
 
   apply: (_t: unknown, _arg: unknown, [tag]: TagNames[]) => {
@@ -151,7 +151,7 @@ const handler = {
       return className
     }
 
-    return (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag[]) =>
+    return (classNames: TemplateStringsArray, ...tags: TemplateLiteralTag<typeof tag>[]) =>
       createBaseComponent({ tag, classNames, tags })
   },
 }
