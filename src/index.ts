@@ -91,7 +91,7 @@ type TailorwindExtended<
    * ex. Button.setDefaultProps({ type: 'submit' })
    */
   setDefaultProps: (
-    defaultProps: ComponentProps<Component> & TransientProps
+    defaultProps: Partial<ComponentProps<Component> & TransientProps>
   ) => void
 }
 
